@@ -15,6 +15,12 @@ var colors = {
     sh: "#948981"
 };
 
+
+var line = d3.line()
+    .defined(d => !isNaN(d.value))
+    .x(d => x(d.date))
+    .y(d => y(d.value))
+
 var data_glb = [];
 var data_sh = [];
 var data_nh = [];
@@ -32,7 +38,7 @@ d3.csv(
     console.log(data_glb);
     updateScales(data_glb);
     createLegends();
-    createChart(data_glb, colors.global, "glb_line");
+    createChart(data_glb, colors.global, "global");
     getDataNh();
     getDataSh();
 });
@@ -48,7 +54,7 @@ function getDataNh() {
             data_nh.push(d);
         }
     ).then(() => {
-        createChart(data_nh, colors.nh, "nh_line");
+        createChart(data_nh, colors.nh, "nh");
     });
 }
 
@@ -63,8 +69,8 @@ function getDataSh() {
             data_sh.push(d);
         }
     ).then(() => {
-        
-        createChart(data_sh, colors.sh, "sh_line");
+
+        createChart(data_sh, colors.sh, "sh");
     });
 }
 
@@ -91,6 +97,13 @@ function updateScales(data) {
             .attr("font-weight", "bold")
             .text(data.y));
 
+
+    svg.append("g")
+        .call(xAxis);
+
+    svg.append("g")
+        .call(yAxis);
+
 }
 
 function createLegends() {
@@ -115,17 +128,6 @@ function createLegends() {
 }
 
 function createChart(data, color, name) {
-    line = d3.line()
-        .defined(d => !isNaN(d.value))
-        .x(d => x(d.date))
-        .y(d => y(d.value))
-
-    svg.append("g")
-        .call(xAxis);
-
-    svg.append("g")
-        .call(yAxis);
-
     svg.append("path")
         .datum(data)
         .attr("fill", "none")
@@ -133,19 +135,48 @@ function createChart(data, color, name) {
         .attr("stroke-width", 1.5)
         .attr("stroke-linejoin", "round")
         .attr("stroke-linecap", "round")
-        .attr("id", name)
+        .attr("id", name + "_line")
         .attr("d", line);
 
-    createPoints(data, color);
+    createPoints(data, color, name);
 }
 
-function createPoints(data, color) {
-    svg.selectAll(".year-dot")
+function createPoints(data, color, name) {
+    svg.selectAll(".year-dot-" + name)
         .data(data)
         .enter().append("circle")
-        .attr("class", "dot")
+        .attr("class", "year-dot-" + name)
         .attr("r", 3.5)
         .attr("cx", d => x(d.date))
         .attr("cy", d => y(d.value))
         .style("fill", color);
-} 
+}
+
+function glb_checkboxChanged() {
+    var glb_checked = document.getElementById('glb_checkbox_input').checked
+    if (glb_checked) {
+        createChart(data_glb, colors.global, "global");
+    } else {
+        svg.select('#global_line').remove();
+        svg.selectAll('.year-dot-global').remove();
+    }
+}
+
+function nh_checkboxChanged() {
+    var nh_checked = document.getElementById('nh_checkbox_input').checked
+    if (nh_checked) {
+        createChart(data_nh, colors.nh, "nh");
+    } else {
+        svg.select('#nh_line').remove();
+        svg.selectAll('.year-dot-nh').remove();
+    }
+}
+function sh_checkboxChanged() {
+    var sh_checked = document.getElementById('sh_checkbox_input').checked
+    if (sh_checked) {
+        createChart(data_sh, colors.sh, "sh");
+    } else {
+        svg.select('#sh_line').remove();
+        svg.selectAll('.year-dot-sh').remove();
+    }
+}

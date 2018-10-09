@@ -222,6 +222,20 @@
         </div>
         <div class="clr-col-lg-8 clr-col-sm-12">
             <div class="clr-row ">
+                <div class="checkbox" id="glb_checkbox">
+                    <input type="checkbox" id="glb_checkbox_input" checked onchange="glb_checkboxChanged()">
+                    <label for="glb_checkbox_input">Promedio global</label>
+                </div>
+                <div class="checkbox" id="nh_checkbox">
+                    <input type="checkbox" id="nh_checkbox_input" checked onchange="nh_checkboxChanged()">
+                    <label for="nh_checkbox_input">Hemisferio Norte</label>
+                </div>
+                <div class="checkbox" id="sh_checkbox">
+                    <input type="checkbox" id="sh_checkbox_input" checked onchange="sh_checkboxChanged()">
+                    <label for="sh_checkbox_input">Hemisferio Sur</label>
+                </div>
+            </div>
+            <div class="clr-row ">
                 <div class="clr-col-12" id="vis1-container">
                     <svg id="vis-target-1" width="2000" height="500"></svg>
                 </div>

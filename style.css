@@ -12,3 +12,19 @@
     width: 100%;
     border-bottom: dashed 1pt #C5E5EF;
 }
+
+.checkbox {
+    padding: 2em;
+}
+
+#glb_checkbox input[type=checkbox]:checked+label::before, .checkbox-inline input[type=checkbox]:checked+label::before {
+    background: #009CBF
+}
+
+#nh_checkbox input[type=checkbox]:checked+label::before, .checkbox-inline input[type=checkbox]:checked+label::before {
+    background: #60B515
+}
+
+#sh_checkbox input[type=checkbox]:checked+label::before, .checkbox-inline input[type=checkbox]:checked+label::before {
+    background: #948981
+}
