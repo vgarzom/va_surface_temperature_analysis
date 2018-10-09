@@ -5,9 +5,9 @@ const
     width = v1_container.node().getBoundingClientRect().width,
     margin = { top: 20, right: 50, bottom: 40, left: 70 },
     yearParse = d3.timeParse("%Y"),
-    svg = d3.select('#vis-target-1');
+    svg = v1_container.append('svg').attr("width", width).attr("height", height);
 
-var xAxis, yAxis, x, y;
+var xAxis, yAxis, x, y, tooltip;
 
 var colors = {
     global: "#009CBF",
@@ -27,29 +27,33 @@ var data_nh = [];
 
 d3.csv(
     "data/global.csv",
-    (d) => {
+    (d, i) => {
+        console.log(i);
         d = {
             date: yearParse(d.Year),
-            value: +d["J-D"]
+            value: +d["J-D"],
+            name: 'Promedio - ' + d.Year
         }
         data_glb.push(d);
     }
 ).then(() => {
     console.log(data_glb);
     updateScales(data_glb);
-    createLegends();
     createChart(data_glb, colors.global, "global");
     getDataNh();
     getDataSh();
+
+    createLegends();
 });
 
 function getDataNh() {
     d3.csv(
         "data/nh.csv",
-        (d) => {
+        (d, i) => {
             d = {
                 date: yearParse(d.Year),
-                value: +d["J-D"]
+                value: +d["J-D"],
+                name: 'Hemisferio Norte - ' + d.Year
             }
             data_nh.push(d);
         }
@@ -61,16 +65,17 @@ function getDataNh() {
 function getDataSh() {
     d3.csv(
         "data/sh.csv",
-        (d) => {
+        (d, i) => {
             d = {
                 date: yearParse(d.Year),
-                value: +d["J-D"]
+                value: +d["J-D"],
+                name: 'Hemisferio Sur - ' + d.Year
             }
             data_sh.push(d);
         }
     ).then(() => {
-
         createChart(data_sh, colors.sh, "sh");
+        createTooltip();
     });
 }
 
@@ -149,34 +154,100 @@ function createPoints(data, color, name) {
         .attr("r", 3.5)
         .attr("cx", d => x(d.date))
         .attr("cy", d => y(d.value))
-        .style("fill", color);
+        .style("fill", color)
+        .attr("cz", 0)
+        .on("mouseover", mousemoved)
+        .on("mouseleave", () => {
+            tooltip.attr("transform", `translate(-1000, 0)`)
+        });
+}
+
+function mousemoved(d) {
+    console.log("Mouse moved --> " + JSON.stringify(d));
+    var coords = d3.mouse(this);
+    tooltip.attr("transform", `translate(${coords[0] + 15},${coords[1] - 25})`)
+    tooltip.select("#tooltip-title")
+        .text(d.name);tooltip.select("#tooltip-text")
+        .text(`cambio de T: ${d.value}ºC`);
+    //tooltip.select('#tooltip-kioskos')
+    //    .text(`cambio ra: ${d.change}ºC`);
+    d3.event.preventDefault();
+
 }
 
 function glb_checkboxChanged() {
     var glb_checked = document.getElementById('glb_checkbox_input').checked
     if (glb_checked) {
-        createChart(data_glb, colors.global, "global");
+        //createChart(data_glb, colors.global, "global");
+        svg.select('#global_line').attr("visibility", "visible");
+        svg.selectAll('.year-dot-global').attr("visibility", "visible");
     } else {
-        svg.select('#global_line').remove();
-        svg.selectAll('.year-dot-global').remove();
+        //svg.select('#global_line').remove();
+        svg.select('#global_line').attr("visibility", "hidden");
+        svg.selectAll('.year-dot-global').attr("visibility", "hidden");
     }
 }
 
 function nh_checkboxChanged() {
     var nh_checked = document.getElementById('nh_checkbox_input').checked
     if (nh_checked) {
-        createChart(data_nh, colors.nh, "nh");
+        svg.select('#nh_line').attr("visibility", "visible");
+        svg.selectAll('.year-dot-nh').attr("visibility", "visible");
     } else {
-        svg.select('#nh_line').remove();
-        svg.selectAll('.year-dot-nh').remove();
+        svg.select('#nh_line').attr("visibility", "hidden");
+        svg.selectAll('.year-dot-nh').attr("visibility", "hidden");
     }
 }
 function sh_checkboxChanged() {
     var sh_checked = document.getElementById('sh_checkbox_input').checked
     if (sh_checked) {
-        createChart(data_sh, colors.sh, "sh");
+        svg.select('#sh_line').attr("visibility", "visible");
+        svg.selectAll('.year-dot-sh').attr("visibility", "visible");
     } else {
-        svg.select('#sh_line').remove();
-        svg.selectAll('.year-dot-sh').remove();
+        svg.select('#sh_line').attr("visibility", "hidden");
+        svg.selectAll('.year-dot-sh').attr("visibility", "hidden");
     }
+}
+
+function createTooltip() {
+    tooltip = svg.append("g")
+        .attr("id", "tooltip")
+        .attr("transform", "translate(-1000,0)")
+        .style("font", "12px sans-serif")
+        .style("z-index", 1000);
+
+    let tooltip_bg = tooltip.append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("rx", 5)
+        .attr("ry", 5)
+        .attr("width", 150)
+        .attr("height", 60)
+        .attr("fill", "#000000bb");
+
+    let tool_text = tooltip.append("text")
+        .attr("x", 10)
+        .attr("y", 15)
+        .attr("fill", "white")
+        .attr("id", "tooltip_1");
+
+    let tool_title = tool_text.append("tspan")
+        .attr("id", "tooltip-title")
+        .attr("x", 10)
+        .attr("y", 15)
+        .style("font-weight", "bold")
+        .style("font-family", "'Dosis', sans-serif");
+
+    let tooltip_text = tool_text.append("tspan")
+        .attr("id", "tooltip-text")
+        .attr("x", 10)
+        .attr("y", 35)
+        .style("font-weight", "regular")
+        .style("font-family", "'Dosis', sans-serif");
+
+    let tooltip_kioskos = tool_text.append("tspan")
+        .attr("id", "tooltip-kioskos")
+        .attr("x", 10)
+        .attr("y", 50)
+        .style("font-family", "'Dosis', sans-serif");
 }
