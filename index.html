@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/@clr/ui/clr-ui.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@clr/icons@0.13.4/clr-icons.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <title>Cambios de temperatura</title>
+</head>
+
+<body>
+    <script src="https://unpkg.com/@clr/icons@0.13.4/clr-icons.min.js"></script>
+    <header class="header-4">
+        <div class="branding">
+            <a class="nav-link">
+                <clr-icon shape="thermometer"></clr-icon>
+                <span class="title">Cambios de temperatura</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="clr-row">
+        <div class="clr-col-lg-4 clr-col-sm-12 data-abstraction-container">
+            <h3>El calentamiento global es una realidad</h3>
+            <h4>Datos de la NASA lo confirman:</h4>
+            <p>La NASA publicó un <a href="https://data.giss.nasa.gov/gistemp/">conjunto de datos</a> donde se
+                presentan los cambios en
+                temperatura desde 1880 hasta la fecha. Dicha información se encuentra diferenciada por hemisferios,
+                meses, estaciones y promedio anual.</p>
+            <p>Esta visualización, basada en dichos datos, muestra que el calentamiento global es un problema real,
+                afecta a todos los ecosistemas y es necesario tomar acciones para detenerlo.</p>
+            <div class="separator"></div>
+
+            <h3>Abstracción de datos: Framework de Tamara</h3>
+
+            <div class="card">
+                <div class="card-block">
+                    <div class="progress top danger">
+                        <progress value="100" max="100"></progress>
+                    </div>
+                    <h4 class="card-title">WHAT</h4>
+                    <p class="card-text">
+                        Los datos se encuentran distribuidos en items y atributos. Cada item representa un año y sus
+                        atributos son los cambios de temperatura promedio, para cada mes y para cada estación del año.
+                        Particularmente se tienen los siguientes atributos:
+                    </p>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Atributo</th>
+                                <th>Descripción</th>
+                                <th>Tipo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>year</td>
+                                <td class="left">Representa el año</td>
+                                <td class="left">Numérico | Secuencial</td>
+                            </tr>
+                            <tr>
+                                <td>jan - dec</td>
+                                <td class="left">Cambio de temperatura en ºC para cada mes</td>
+                                <td class="left">Numérico | secuencial</td>
+                            </tr>
+                            <tr>
+                                <td>DJM</td>
+                                <td class="left">cambio de temperatura en ºC de Dec a Feb</td>
+                                <td class="left">Numérico | secuencial</td>
+                            </tr>
+                            <tr>
+                                <td>MAM</td>
+                                <td class="left">cambio de temperatura en ºC de Mar a May</td>
+                                <td class="left">Numérico | secuencial</td>
+                            </tr>
+                            <tr>
+                                <td>JJA</td>
+                                <td class="left">cambio de temperatura en ºC de Jun a Aug</td>
+                                <td class="left">Numérico | secuencial</td>
+                            </tr>
+                            <tr>
+                                <td>SON</td>
+                                <td class="left">cambio de temperatura en ºC de Sep a Nov</td>
+                                <td class="left">Numérico | secuencial</td>
+                            </tr>
+                            <tr>
+                                <td>J-D</td>
+                                <td class="left">Cambio de temperatura en ºC promedio anual</td>
+                                <td class="left">Numérico | secuencial</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <p>Adicionalmente se hace una derivación de datos en ºF para los mismos atributos. <b>Es importante
+                            destacar que los datos de cada hemisferio provienen de distintos datasets con las mismas
+                            características</b></p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-block">
+                    <div class="progress top">
+                        <progress value="100" max="100"></progress>
+                    </div>
+                    <h4 class="card-title">WHY</h4>
+                    <p class="card-text">
+                        Las siguientes son las tareas realizadas con la visualización:
+                    </p>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Tarea</th>
+                                <th>Términos Tamara</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td class="left">Descubrir tendencias en los cambios de temperatura anuales</td>
+                                <td class="left">Discover Trends</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td class="left">Comparar tendendencias en los cambios de temperatura entre hemisferios</td>
+                                <td class="left">Compare Trends</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td class="left">Identificar años en los que hubo un mayor aumento o disminución de la
+                                    temperatura</td>
+                                <td class="left">Lookup Outliers</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="card">
+                <div class="card-block">
+                    <div class="progress top success">
+                        <progress value="100" max="100"></progress>
+                    </div>
+                    <h4 class="card-title">HOW</h4>
+                    <p class="card-text">
+                        Los siguientes son los distintos modismos seleccionados para la visualización:
+                    </p>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Encode</td>
+                                <td class="left">
+                                    <ul>
+                                        <li><b>Order:</b> Por año</li>
+                                        <li><b>Align:</b> Acorde al valor de temperatura</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Channels</td>
+                                <td class="left">
+                                    <ul>
+                                        <li><b>Spatial:</b>
+                                            <ul>
+                                                <li><b>x:</b> Cada año</li>
+                                                <li><b>y:</b> Temperatura</li>
+                                            </ul>
+                                        </li>
+                                        <li><b>Color saturation:</b> de azul a rojo | nivel del cambio de temperatura</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Marks</td>
+                                <td class="left">
+                                    <ul>
+                                        <li><b>Line:</b> Comportamiento del cambio de temperatura</li>
+                                    </ul>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Manipulate</td>
+                                <td class="left">
+                                    <ul>
+                                        <li><b>Change:</b> Cambios entre hemisferios</li>
+                                        <li><b>Select:</b> Seleccionar un año para observar información adicional.</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Facet</td>
+                                <td class="left">
+                                    <ul>
+                                        <li><b>super impose:</b> Sobre poner hemisferios para comparar tendencias</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Reduce</td>
+                                <td class="left">
+                                    <ul>
+                                        <li><b>Embed:</b> Combinar datos de años en décadas</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        <div class="clr-col-lg-8 clr-col-sm-12">
+            <span>6</span>
+        </div>
+    </div>
+</body>
+
+</html>

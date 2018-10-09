@@ -1,0 +1,14 @@
+.data-abstraction-container {
+    background-color: #F3F6FA;
+    max-height: 100vh;
+    border-right: solid 1pt #D9E4EA;
+    padding: 0em 2em 2em 3em;
+    overflow: scroll;
+    text-align: justify;
+}
+
+.separator {
+    height: 1em;
+    width: 100%;
+    border-bottom: dashed 1pt #C5E5EF;
+}
