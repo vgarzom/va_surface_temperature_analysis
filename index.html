@@ -63,32 +63,32 @@
                             <tr>
                                 <td>jan - dec</td>
                                 <td class="left">Cambio de temperatura en ºC para cada mes</td>
-                                <td class="left">Numérico | secuencial</td>
+                                <td class="left">Numérico | Divergente</td>
                             </tr>
                             <tr>
                                 <td>DJM</td>
                                 <td class="left">cambio de temperatura en ºC de Dec a Feb</td>
-                                <td class="left">Numérico | secuencial</td>
+                                <td class="left">Numérico | Divergente</td>
                             </tr>
                             <tr>
                                 <td>MAM</td>
                                 <td class="left">cambio de temperatura en ºC de Mar a May</td>
-                                <td class="left">Numérico | secuencial</td>
+                                <td class="left">Numérico | Divergente</td>
                             </tr>
                             <tr>
                                 <td>JJA</td>
                                 <td class="left">cambio de temperatura en ºC de Jun a Aug</td>
-                                <td class="left">Numérico | secuencial</td>
+                                <td class="left">Numérico | Divergente</td>
                             </tr>
                             <tr>
                                 <td>SON</td>
                                 <td class="left">cambio de temperatura en ºC de Sep a Nov</td>
-                                <td class="left">Numérico | secuencial</td>
+                                <td class="left">Numérico | Divergente</td>
                             </tr>
                             <tr>
                                 <td>J-D</td>
                                 <td class="left">Cambio de temperatura en ºC promedio anual</td>
-                                <td class="left">Numérico | secuencial</td>
+                                <td class="left">Numérico | Divergente</td>
                             </tr>
                         </tbody>
                     </table>
@@ -221,9 +221,16 @@
 
         </div>
         <div class="clr-col-lg-8 clr-col-sm-12">
-            <span>6</span>
+            <div class="clr-row ">
+                <div class="clr-col-12" id="vis1-container">
+                    <svg id="vis-target-1" width="2000" height="500"></svg>
+                </div>
+            </div>
         </div>
     </div>
+
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="vis1.js"></script>
 </body>
 
 </html>
