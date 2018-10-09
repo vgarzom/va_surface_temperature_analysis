@@ -28,3 +28,7 @@
 #sh_checkbox input[type=checkbox]:checked+label::before, .checkbox-inline input[type=checkbox]:checked+label::before {
     background: #948981
 }
+
+.insights_container {
+    padding: 2em;
+}
