@@ -2,11 +2,22 @@ const v1_container = d3.select("#vis1-container");
 
 const
     height = 500,
-    width = v1_container.node().getBoundingClientRect().width;
-margin = { top: 20, right: 50, bottom: 40, left: 70 },
-    yearParse = d3.timeParse("%Y");
+    width = v1_container.node().getBoundingClientRect().width,
+    margin = { top: 20, right: 50, bottom: 40, left: 70 },
+    yearParse = d3.timeParse("%Y"),
+    svg = d3.select('#vis-target-1');
 
-var data = [];
+var xAxis, yAxis, x, y;
+
+var colors = {
+    global: "#009CBF",
+    nh: "#60B515",
+    sh: "#948981"
+};
+
+var data_glb = [];
+var data_sh = [];
+var data_nh = [];
 
 d3.csv(
     "data/global.csv",
@@ -15,14 +26,49 @@ d3.csv(
             date: yearParse(d.Year),
             value: +d["J-D"]
         }
-        data.push(d);
+        data_glb.push(d);
     }
 ).then(() => {
-    console.log(data);
-    createChart(data);
+    console.log(data_glb);
+    updateScales(data_glb);
+    createLegends();
+    createChart(data_glb, colors.global, "glb_line");
+    getDataNh();
+    getDataSh();
 });
 
-function createChart(data) {
+function getDataNh() {
+    d3.csv(
+        "data/nh.csv",
+        (d) => {
+            d = {
+                date: yearParse(d.Year),
+                value: +d["J-D"]
+            }
+            data_nh.push(d);
+        }
+    ).then(() => {
+        createChart(data_nh, colors.nh, "nh_line");
+    });
+}
+
+function getDataSh() {
+    d3.csv(
+        "data/sh.csv",
+        (d) => {
+            d = {
+                date: yearParse(d.Year),
+                value: +d["J-D"]
+            }
+            data_sh.push(d);
+        }
+    ).then(() => {
+        
+        createChart(data_sh, colors.sh, "sh_line");
+    });
+}
+
+function updateScales(data) {
     x = d3.scaleTime()
         .domain(d3.extent(data, d => d.date))
         .range([margin.left, width - margin.right])
@@ -45,12 +91,34 @@ function createChart(data) {
             .attr("font-weight", "bold")
             .text(data.y));
 
+}
+
+function createLegends() {
+    svg.append("text")
+        .attr("x", -height / 2)
+        .attr("y", 20)
+        .attr("fill", "black")
+        .attr("id", "y_legend")
+        .text("Cambios de temperatura ºC")
+        .style("text-anchor", "middle")
+        .attr("transform", function (d) {
+            return "rotate(-90)";
+        });
+
+    svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", height)
+        .attr("fill", "black")
+        .attr("id", "y_legend")
+        .style("text-anchor", "middle")
+        .text("Año");
+}
+
+function createChart(data, color, name) {
     line = d3.line()
         .defined(d => !isNaN(d.value))
         .x(d => x(d.date))
         .y(d => y(d.value))
-
-    const svg = d3.select('#vis-target-1');
 
     svg.append("g")
         .call(xAxis);
@@ -61,31 +129,23 @@ function createChart(data) {
     svg.append("path")
         .datum(data)
         .attr("fill", "none")
-        .attr("stroke", "steelblue")
+        .attr("stroke", color)
         .attr("stroke-width", 1.5)
         .attr("stroke-linejoin", "round")
         .attr("stroke-linecap", "round")
+        .attr("id", name)
         .attr("d", line);
 
-    svg.append("text")
-        .attr("x", -height/2)
-        .attr("y", 20)
-        .attr("fill", "black")
-        .attr("id", "y_legend")
-        .text("Cambios de temperatura ºC")
-        .style("text-anchor", "middle")
-        .attr("transform", function (d) {
-            return "rotate(-90)";
-        });
-
-    
-
-    svg.append("text")
-        .attr("x", width/2)
-        .attr("y", height)
-        .attr("fill", "black")
-        .attr("id", "y_legend")
-        .style("text-anchor", "middle")
-        .text("Año");
-
+    createPoints(data, color);
 }
+
+function createPoints(data, color) {
+    svg.selectAll(".year-dot")
+        .data(data)
+        .enter().append("circle")
+        .attr("class", "dot")
+        .attr("r", 3.5)
+        .attr("cx", d => x(d.date))
+        .attr("cy", d => y(d.value))
+        .style("fill", color);
+} 
