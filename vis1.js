@@ -4,10 +4,26 @@ const
     height = 500,
     width = v1_container.node().getBoundingClientRect().width,
     margin = { top: 20, right: 50, bottom: 40, left: 70 },
+    tooltip_size = { height: 80, width: 150 },
     yearParse = d3.timeParse("%Y"),
-    svg = v1_container.append('svg').attr("width", width).attr("height", height);
+    yearFormat = d3.timeFormat("%Y"),
+    svg = v1_container.append('svg').attr("width", width).attr("height", height),
+    minYear = 1880;
 
-var xAxis, yAxis, x, y, tooltip;
+const vertical_indicator = svg.append("line")
+    .attr("x1", -100)
+    .attr("y1", tooltip_size.height)
+    .attr("x2", -100)
+    .attr("y2", height - margin.bottom + 5)
+    .attr("stroke-dasharray", "4 4")
+    .attr("stroke", "steelblue")
+    .attr("stroke-width", 1.2)
+    .attr("stroke-linejoin", "round")
+    .attr("stroke-linecap", "round");
+
+svg.on("mousemove", mousemoved);
+
+var xAxis, yAxis, xScale, y, tooltip;
 
 var colors = {
     global: "#009CBF",
@@ -18,7 +34,7 @@ var colors = {
 
 var line = d3.line()
     .defined(d => !isNaN(d.value))
-    .x(d => x(d.date))
+    .x(d => xScale(d.date))
     .y(d => y(d.value))
 
 var data_glb = [];
@@ -28,37 +44,21 @@ var data_nh = [];
 d3.csv(
     "data/global.csv",
     (d, i) => {
-        console.log(i);
-        d = {
-            date: yearParse(d.Year),
-            value: +d["J-D"],
-            name: 'Promedio - ' + d.Year
-        }
-        data_glb.push(d);
+        data_glb.push(mapDataElement(d));
     }
 ).then(() => {
-    console.log(data_glb);
-    updateScales(data_glb);
-    createChart(data_glb, colors.global, "global");
     getDataNh();
-    getDataSh();
-
-    createLegends();
 });
 
 function getDataNh() {
     d3.csv(
         "data/nh.csv",
         (d, i) => {
-            d = {
-                date: yearParse(d.Year),
-                value: +d["J-D"],
-                name: 'Hemisferio Norte - ' + d.Year
-            }
-            data_nh.push(d);
+            data_nh.push(mapDataElement(d));
         }
     ).then(() => {
-        createChart(data_nh, colors.nh, "nh");
+
+        getDataSh();
     });
 }
 
@@ -66,21 +66,29 @@ function getDataSh() {
     d3.csv(
         "data/sh.csv",
         (d, i) => {
-            d = {
-                date: yearParse(d.Year),
-                value: +d["J-D"],
-                name: 'Hemisferio Sur - ' + d.Year
-            }
-            data_sh.push(d);
+            data_sh.push(mapDataElement(d));
         }
     ).then(() => {
+        updateScales(data_glb);
+        createChart(data_glb, colors.global, "global");
+        createChart(data_nh, colors.nh, "nh");
         createChart(data_sh, colors.sh, "sh");
+        createLegends();
         createTooltip();
     });
 }
 
+function mapDataElement(d) {
+    d = {
+        date: yearParse(d.Year),
+        value: +d["J-D"],
+        name: d.Year
+    }
+    return d;
+}
+
 function updateScales(data) {
-    x = d3.scaleTime()
+    xScale = d3.scaleTime()
         .domain(d3.extent(data, d => d.date))
         .range([margin.left, width - margin.right])
 
@@ -90,7 +98,7 @@ function updateScales(data) {
 
     xAxis = g => g
         .attr("transform", `translate(0,${height - margin.bottom})`)
-        .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0));
+        .call(d3.axisBottom(xScale).ticks(width / 80).tickFormat(yearFormat));
 
     yAxis = g => g
         .attr("transform", `translate(${margin.left},0)`)
@@ -101,7 +109,6 @@ function updateScales(data) {
             .attr("text-anchor", "start")
             .attr("font-weight", "bold")
             .text(data.y));
-
 
     svg.append("g")
         .call(xAxis);
@@ -152,27 +159,61 @@ function createPoints(data, color, name) {
         .enter().append("circle")
         .attr("class", "year-dot-" + name)
         .attr("r", 3.5)
-        .attr("cx", d => x(d.date))
+        .attr("cx", d => xScale(d.date))
         .attr("cy", d => y(d.value))
         .style("fill", color)
-        .attr("cz", 0)
-        .on("mouseover", mousemoved)
-        .on("mouseleave", () => {
-            tooltip.attr("transform", `translate(-1000, 0)`)
-        });
+        .attr("cz", 0);
 }
 
-function mousemoved(d) {
-    console.log("Mouse moved --> " + JSON.stringify(d));
+function mousemoved() {
+    const coords = d3.mouse(this);
+    var x = coords[0];
+    if (x <= margin.left) {
+        x = margin.left;
+    }
+    if (x >= width - margin.right) {
+        x = width - margin.right;
+    }
+    vertical_indicator
+        .attr("x1", x)
+        .attr("x2", x);
+
+    updateTooltip(x);
+
+}
+
+function updateTooltip(x) {
+    /*
     var coords = d3.mouse(this);
     tooltip.attr("transform", `translate(${coords[0] + 15},${coords[1] - 25})`)
     tooltip.select("#tooltip-title")
-        .text(d.name);tooltip.select("#tooltip-text")
-        .text(`cambio de T: ${d.value}ºC`);
-    //tooltip.select('#tooltip-kioskos')
-    //    .text(`cambio ra: ${d.change}ºC`);
+        .text(d.name); tooltip.select("#tooltip-text")
+            .text(`cambio de T: ${d.value}ºC`);
+    tooltip.select('#tooltip-kioskos')
+        .text(`cambio ra: ${d.change}ºC`);
     d3.event.preventDefault();
+*/
+    var tx = x - tooltip_size.width / 2;
+    if (tx <= margin.left) {
+        tx = margin.left;
+    }
+    if (tx > width - margin.right - tooltip_size.width) {
+        tx = width - margin.right - tooltip_size.width;
+    }
+    tooltip.attr("transform", `translate(${tx},0)`)
 
+    const year = +yearFormat(xScale.invert(x));
+    const glbD = data_glb[year - minYear];
+    const nhD = data_nh[year - minYear];
+    const shD = data_sh[year - minYear];
+    tooltip.select("#tooltip-title")
+        .text("" + year);
+    tooltip.select("#tooltip-average")
+        .text(`∆T promedio: ${glbD.value}ºC`);
+    tooltip.select('#tooltip-nh')
+        .text(`∆T nh: ${nhD.value}ºC`);
+    tooltip.select('#tooltip-sh')
+        .text(`∆T sh: ${shD.value}ºC`);
 }
 
 function glb_checkboxChanged() {
@@ -221,8 +262,8 @@ function createTooltip() {
         .attr("y", 0)
         .attr("rx", 5)
         .attr("ry", 5)
-        .attr("width", 150)
-        .attr("height", 60)
+        .attr("width", tooltip_size.width)
+        .attr("height", tooltip_size.height)
         .attr("fill", "#000000bb");
 
     let tool_text = tooltip.append("text")
@@ -231,23 +272,26 @@ function createTooltip() {
         .attr("fill", "white")
         .attr("id", "tooltip_1");
 
-    let tool_title = tool_text.append("tspan")
+    tool_text.append("tspan")
         .attr("id", "tooltip-title")
         .attr("x", 10)
-        .attr("y", 15)
+        .attr("y", 22)
         .style("font-weight", "bold")
-        .style("font-family", "'Dosis', sans-serif");
+        .style("font-size", 20);
 
-    let tooltip_text = tool_text.append("tspan")
-        .attr("id", "tooltip-text")
+    tool_text.append("tspan")
+        .attr("id", "tooltip-average")
         .attr("x", 10)
-        .attr("y", 35)
-        .style("font-weight", "regular")
-        .style("font-family", "'Dosis', sans-serif");
+        .attr("y", 40)
+        .style("font-weight", "regular");
 
-    let tooltip_kioskos = tool_text.append("tspan")
-        .attr("id", "tooltip-kioskos")
+    tool_text.append("tspan")
+        .attr("id", "tooltip-nh")
         .attr("x", 10)
-        .attr("y", 50)
-        .style("font-family", "'Dosis', sans-serif");
+        .attr("y", 55);
+
+    tool_text.append("tspan")
+        .attr("id", "tooltip-sh")
+        .attr("x", 10)
+        .attr("y", 70);
 }
