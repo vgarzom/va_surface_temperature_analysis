@@ -1,34 +1,40 @@
 const v1_container = d3.select("#vis1-container");
 
 const
-    height = 500,
+    full_height = v1_container.node().getBoundingClientRect().height,
+    height = 0.7 * full_height,
     width = v1_container.node().getBoundingClientRect().width,
     margin = { top: 20, right: 50, bottom: 40, left: 70 },
     tooltip_size = { height: 80, width: 150 },
     yearParse = d3.timeParse("%Y"),
     yearFormat = d3.timeFormat("%Y"),
-    svg = v1_container.append('svg').attr("width", width).attr("height", height),
+    svg = v1_container.append('svg').attr("width", width).attr("height", full_height),
     minYear = 1880;
+console.log(height);
 
-const vertical_indicator = svg.append("line")
-    .attr("x1", -100)
-    .attr("y1", tooltip_size.height)
-    .attr("x2", -100)
-    .attr("y2", height - margin.bottom + 5)
-    .attr("stroke-dasharray", "4 4")
-    .attr("stroke", "steelblue")
-    .attr("stroke-width", 1.2)
-    .attr("stroke-linejoin", "round")
-    .attr("stroke-linecap", "round");
+var vertical_indicator;
 
+function createVerticalIndicator() {
+    vertical_indicator = svg.append("line")
+        .attr("x1", -100)
+        .attr("y1", tooltip_size.height)
+        .attr("x2", -100)
+        .attr("y2", full_height + 5)
+        .attr("stroke-dasharray", "4 4")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 1.2)
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round");
+}
 svg.on("mousemove", mousemoved);
 
-var xAxis, yAxis, xScale, y, tooltip;
+var xAxis, yAxis, xScale, y, tooltip, normalize;
 
 var colors = {
     global: "#009CBF",
     nh: "#60B515",
-    sh: "#948981"
+    sh: "#948981",
+    tooltip_text: "#314351"
 };
 
 
@@ -75,6 +81,8 @@ function getDataSh() {
         createChart(data_sh, colors.sh, "sh");
         createLegends();
         createTooltip();
+        initHorizonChart({ glb: data_glb, nh: data_nh, sh: data_sh }, { width: width, height: full_height - height }, { x: 0, y: height }, svg, margin)
+        createVerticalIndicator();
     });
 }
 
@@ -82,7 +90,11 @@ function mapDataElement(d) {
     d = {
         date: yearParse(d.Year),
         value: +d["J-D"],
-        name: d.Year
+        name: d.Year,
+        DJF: +d.DJF,
+        MAM: +d.MAM,
+        JJA: +d.JJA,
+        SON: +d.SON
     }
     return d;
 }
@@ -109,6 +121,8 @@ function updateScales(data) {
             .attr("text-anchor", "start")
             .attr("font-weight", "bold")
             .text(data.y));
+
+    normalize = d3.scaleLinear().domain([-1, 1]).range([1, 0]);
 
     svg.append("g")
         .call(xAxis);
@@ -183,16 +197,9 @@ function mousemoved() {
 }
 
 function updateTooltip(x) {
-    /*
-    var coords = d3.mouse(this);
-    tooltip.attr("transform", `translate(${coords[0] + 15},${coords[1] - 25})`)
-    tooltip.select("#tooltip-title")
-        .text(d.name); tooltip.select("#tooltip-text")
-            .text(`cambio de T: ${d.value}ºC`);
-    tooltip.select('#tooltip-kioskos')
-        .text(`cambio ra: ${d.change}ºC`);
-    d3.event.preventDefault();
-*/
+    if (tooltip === undefined) {
+        return;
+    }
     var tx = x - tooltip_size.width / 2;
     if (tx <= margin.left) {
         tx = margin.left;
@@ -214,6 +221,12 @@ function updateTooltip(x) {
         .text(`∆T nh: ${nhD.value}ºC`);
     tooltip.select('#tooltip-sh')
         .text(`∆T sh: ${shD.value}ºC`);
+
+    if (!isNaN(glbD.value)) {
+        var color = d3.interpolateRdBu(normalize(glbD.value));
+        color = color.replace('rgb', 'rgba').replace(')', ', 0.8)');
+        tooltip.select('.tooltip-bg').attr("fill", color)
+    }
 }
 
 function glb_checkboxChanged() {
@@ -262,6 +275,7 @@ function createTooltip() {
         .attr("y", 0)
         .attr("rx", 5)
         .attr("ry", 5)
+        .attr("class", "tooltip-bg")
         .attr("width", tooltip_size.width)
         .attr("height", tooltip_size.height)
         .attr("fill", "#000000bb");
@@ -269,7 +283,7 @@ function createTooltip() {
     let tool_text = tooltip.append("text")
         .attr("x", 10)
         .attr("y", 15)
-        .attr("fill", "white")
+        .attr("fill", colors.tooltip_text)
         .attr("id", "tooltip_1");
 
     tool_text.append("tspan")

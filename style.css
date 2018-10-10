@@ -7,6 +7,19 @@
     text-align: justify;
 }
 
+.central-container {
+    overflow: scroll;
+    max-height: 100vh;
+}
+
+.full-height {
+    height: 75vh;
+}
+
+.content-area {
+    padding: 0px !important;
+}
+
 .separator {
     height: 1em;
     width: 100%;
