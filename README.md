@@ -1,4 +1,4 @@
-# va_surface_temperature_analysis
+# El calentamiento global es real: Los datos no mienten!
 La NASA publica periodicamente un conjunto de datos donde se presentan los cambios en temperatura partiendo en el año 1880 hasta la fecha. Dicha información se encuentra diferenciada por hemisferios, meses, estaciones y promedio anual.
 
 Esta visualización, basada en dichos datos, muestra que el calentamiento global es un problema real, afecta a todos los ecosistemas y es necesario tomar acciones para detenerlo.
@@ -12,7 +12,7 @@ Esta visualización, basada en dichos datos, muestra que el calentamiento global
 - El proyecto se encuentra en github: https://github.com/vgarzom/va_surface_temperature_analysis
 - La visualización fue realizada utilizando D3.js v5
 - Frontend utilizando VMWare Clarity Design: https://vmware.github.io/clarity/documentation/v0.13
-- Demo funcional en: https://vgarzom.github.io/va_surface_temperature_analysis/
+- Demo funcional en: http://bit.ly/2yscRCc
 
 ## Ejecutar en máquina local
 Para ejecutar el código en una máquina local es requerido nodejs.
