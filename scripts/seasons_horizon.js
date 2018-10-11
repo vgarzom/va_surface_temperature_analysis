@@ -70,10 +70,10 @@ function initHorizonChart(_data, size, position, svg, _margin) {
 
     g.append("line")
         .attr("x1", 0)
-        .attr("y1", 0 - separation/2)
+        .attr("y1", step + separation/2)
         .attr("x2", width)
-        .attr("y2", 0 - separation/2)
-        .attr("stroke-dasharray", "20 4")
+        .attr("y2", step + separation/2)
+        .attr("stroke-dasharray", "1 4")
         .attr("stroke", "gray")
         .attr("stroke-width", 0.75)
         .attr("stroke-linejoin", "round")

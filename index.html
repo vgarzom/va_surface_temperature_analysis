@@ -49,11 +49,13 @@
                                 </div>
                                 <h4 class="card-title">WHAT</h4>
                                 <p class="card-text">
-                                    Los datos se encuentran distribuidos en items y atributos. Cada item representa un
-                                    año y sus
-                                    atributos son los cambios de temperatura promedio, para cada mes y para cada
-                                    estación del año.
-                                    Particularmente se tienen los siguientes atributos:
+                                    Los datos se encuentran distribuidos en items y atributos, sin embargo estos
+                                    atributos están distribuidos a partir de variables temporales. Indicándonos que se
+                                    trata de un <b>Dataset Temporal</b>. Dicho dataset se enc Tenemos básicamente 2
+                                    variables, el tiempo y
+                                    la temperatura, con la acotación que dicha temperatura se encuentra medida para las
+                                    diferentes estaciones y en un promedio general para todo el año. La siguiente tabla
+                                    resume los atributos que se utilizarán en la visualización:
                                 </p>
                                 <table class="table">
                                     <thead>
@@ -65,39 +67,34 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>year</td>
-                                            <td class="left">Representa el año</td>
-                                            <td class="left">Numérico | Secuencial</td>
-                                        </tr>
-                                        <tr>
-                                            <td>jan - dec</td>
-                                            <td class="left">Cambio de temperatura en ºC para cada mes</td>
-                                            <td class="left">Numérico | Divergente</td>
+                                            <td>tiempo</td>
+                                            <td class="left">distribuido por años</td>
+                                            <td class="left">Ord | Quan | Seq.</td>
                                         </tr>
                                         <tr>
                                             <td>DJM</td>
-                                            <td class="left">cambio de temperatura en ºC de Dec a Feb</td>
-                                            <td class="left">Numérico | Divergente</td>
+                                            <td class="left">Anomalía de temperatura en ºC entre Dec y Feb</td>
+                                            <td class="left">Ord | Quan | Div.</td>
                                         </tr>
                                         <tr>
                                             <td>MAM</td>
-                                            <td class="left">cambio de temperatura en ºC de Mar a May</td>
-                                            <td class="left">Numérico | Divergente</td>
+                                            <td class="left">Anomalía de temperatura en ºC entre Mar y May</td>
+                                            <td class="left">Ord | Quan | Div.</td>
                                         </tr>
                                         <tr>
                                             <td>JJA</td>
-                                            <td class="left">cambio de temperatura en ºC de Jun a Aug</td>
-                                            <td class="left">Numérico | Divergente</td>
+                                            <td class="left">Anomalía de temperatura en ºC entre Jun y Aug</td>
+                                            <td class="left">Ord | Quan | Div.</td>
                                         </tr>
                                         <tr>
                                             <td>SON</td>
-                                            <td class="left">cambio de temperatura en ºC de Sep a Nov</td>
-                                            <td class="left">Numérico | Divergente</td>
+                                            <td class="left">Anomalía de temperatura en ºC entre Sep y Nov</td>
+                                            <td class="left">Ord | Quan | Div.</td>
                                         </tr>
                                         <tr>
                                             <td>J-D</td>
-                                            <td class="left">Cambio de temperatura en ºC promedio anual</td>
-                                            <td class="left">Numérico | Divergente</td>
+                                            <td class="left">Promedio anual de las Anomalías de temperatura en ºC</td>
+                                            <td class="left">Ord | Quan | Div.</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -106,7 +103,8 @@
                                 <p><b>Es importante
                                         destacar que los datos de cada hemisferio provienen de distintos datasets con
                                         las mismas
-                                        características</b></p>
+                                        características.</b> De aquí se deriva un atributo "hemisferio" categórico,
+                                    obtenido al combinar los distintos datasets.</p>
                             </div>
                         </div>
 
@@ -141,10 +139,16 @@
                                         </tr>
                                         <tr>
                                             <td>3</td>
-                                            <td class="left">Identificar años en los que hubo un mayor aumento o
-                                                disminución de la
-                                                temperatura</td>
-                                            <td class="left">Lookup Outliers</td>
+                                            <td class="left">Identificar años y estaciones en los que hubo un mayor
+                                                aumento o
+                                                de la temperatura</td>
+                                            <td class="left">Locate Outliers</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>4</td>
+                                            <td class="left">Comparar tendencias entre hemisferios y estaciones</td>
+                                            <td class="left">Compare trends</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -161,6 +165,7 @@
                                 <p class="card-text">
                                     Los siguientes son los distintos modismos seleccionados para la visualización:
                                 </p>
+                                <h6>Visualización 1: Line chart</h6>
                                 <table class="table">
                                     <thead>
                                         <tr>
@@ -170,34 +175,28 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>Encode</td>
-                                            <td class="left">
-                                                <ul>
-                                                    <li><b>Order:</b> Por año</li>
-                                                    <li><b>Align:</b> Acorde al valor de temperatura</li>
-                                                </ul>
-                                            </td>
-                                        </tr>
-                                        <tr>
                                             <td>Channels</td>
                                             <td class="left">
-                                                <ul>
+                                                <ul class="list">
                                                     <li><b>Spatial:</b>
-                                                        <ul>
-                                                            <li><b>x:</b> Cada año</li>
-                                                            <li><b>y:</b> Temperatura</li>
+                                                        <ul class="list">
+                                                            <li><b>x:</b> Tiempo, distribuido en años <br /> <b>Encode:
+                                                                </b>Express</li>
+                                                            <li><b>y:</b> Temperatura, anomalías en ºC <br /> <b>Encode:
+                                                                </b>Express</li>
                                                         </ul>
                                                     </li>
-                                                    <li><b>Color hue:</b> identifican los hemisferios como categorías</li>
+                                                    <li><b>Color saturation:</b> anomalías <br /> <b> Encode:
+                                                        </b>express</li>
                                                 </ul>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Marks</td>
                                             <td class="left">
-                                                <ul>
-                                                    <li><b>Line:</b> Comportamiento del cambio de temperatura</li>
-                                                    <li><b>Point:</b> Marca el cambio de temperatura en un año dado</li>
+                                                <ul class="list">
+                                                    <li><b>Area:</b> Marca para el comportamiento de las anomalías de
+                                                        temperatura respecto al tiempo.</li>
                                                 </ul>
                                             </td>
                                         </tr>
@@ -205,35 +204,115 @@
                                         <tr>
                                             <td>Manipulate</td>
                                             <td class="left">
-                                                <ul>
-                                                    <li><b>Change:</b> Cambios entre hemisferios</li>
-                                                    <li><b>Select:</b> Seleccionar un año para observar información
-                                                        adicional.</li>
+                                                <ul class="list">
+                                                    <li><b>Change:</b> Permite seleccionar los hemisferios que serán
+                                                        presentados.</li>
+                                                    <li><b>Select:</b> Permite ubicarse sobre un año dado para
+                                                        facilitar la lectura de datos.</li>
                                                 </ul>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Facet</td>
                                             <td class="left">
-                                                <ul>
-                                                    <li><b>super impose:</b> Sobre poner hemisferios para comparar
-                                                        tendencias</li>
+                                                <ul class="list">
+                                                    <li><b>super impose:</b> Se sobreponen los hemisferios para
+                                                        facilitar su comparación y se sobreponen las marcas de
+                                                        puntos y líneas.</li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                                <h6>Visualización 2: Horizon chart</h6>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Channels</td>
+                                            <td class="left">
+                                                <ul class="list">
+                                                    <li><b>Spatial:</b>
+                                                        <ul class="list">
+                                                            <li><b>x:</b> Tiempo, distribuido en años <br /> <b>Encode:
+                                                                </b>Express</li>
+                                                            <li><b>y:</b> Temperatura, anomalías en ºC <br /> <b>Encode:
+                                                                </b>Express</li>
+                                                        </ul>
+                                                    </li>
+                                                    <li><b>Color hue:</b> Categoriza los hemisferios <br /> <b> Encode:
+                                                        </b>separate, order, align</li>
                                                 </ul>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>Reduce</td>
+                                            <td>Marks</td>
                                             <td class="left">
-                                                <ul>
-                                                    <li><b>Embed:</b> Combinar datos de años en décadas</li>
+                                                <ul class="list">
+                                                    <li><b>Line:</b> Marca para el comportamiento de las anomalías de
+                                                        temperatura respecto al tiempo.</li>
+                                                    <li><b>Point:</b> Marca superimpuesta a la línea para acentuar las
+                                                        anomalías.</li>
                                                 </ul>
                                             </td>
                                         </tr>
+
+
+
                                     </tbody>
                                 </table>
                             </div>
                         </div>
+                        <h4>Tecnologías utilizadas</h4>
+                        <ul class="list">
+                            <li>
+                                <a href="https://d3js.org/">d3 v5
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://vmware.github.io/clarity/documentation/v0.13">VMWare - Clarity Design
+                                    V0.13
+                                </a>
+                            </li>
+                        </ul>
+                        <span class="label label-blue">Github</span>
+                        <span class="label label-blue">Github Pages</span>
+                        <div class="separator"></div>
+                        <h4>Referencias</h4>
+                        <ul class="list">
+                            <li>
+                                <a href="https://beta.observablehq.com/@mbostock/d3-line-chart">Mike Bostock -
+                                    LineChart
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://beta.observablehq.com/@mbostock/d3-horizon-chart">Mike Bostock -
+                                    Horizon Chart
+                                </a>
+                            </li>
+                        </ul>
 
+                        <div class="separator"></div>
+                        <h4>Créditos</h4>
+                        <ul class="list">
+                            <li>
+                                <a href="https://www.linkedin.com/in/v%C3%ADctor-garz%C3%B3n-mar%C3%ADn-25984b27/">Víctor
+                                    Garzón Marín
+                                </a>
+                            </li>
+                            <li>
+                                <a href="http://johnguerra.co">Visual Analytics - Uniandes
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="separator"></div>
+                        <p>Entregado bajo licencia MIT</p>
                     </div>
                     <div class="clr-col-md-8 clr-col-sm-12 central-container">
                         <div class="clr-row ">
