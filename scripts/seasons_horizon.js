@@ -1,6 +1,6 @@
 const overlap = 9;
-
-var href_base = "http://localhost:8080#";
+var href_base = window.location.href + "#";
+console.log("url base = "+href_base);
 function initHorizonChart(_data, size, position, svg, _margin) {
     var width = size.width - _margin.left - _margin.right;
     var height = size.height - _margin.top;
