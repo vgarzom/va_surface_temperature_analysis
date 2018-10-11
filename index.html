@@ -26,7 +26,7 @@
         <div class="content-container">
             <div class="content-area">
                 <div class="clr-row">
-                    <div class="clr-col-lg-4 clr-col-sm-12 data-abstraction-container">
+                    <div class="clr-col-md-4 clr-col-sm-12 data-abstraction-container">
                         <h3>El calentamiento global es una realidad</h3>
                         <h4>Datos de la NASA lo confirman:</h4>
                         <p>La NASA publicó un <a href="https://data.giss.nasa.gov/gistemp/">conjunto de datos</a> donde
@@ -235,7 +235,7 @@
                         </div>
 
                     </div>
-                    <div class="clr-col-lg-8 clr-col-sm-12 central-container">
+                    <div class="clr-col-md-8 clr-col-sm-12 central-container">
                         <div class="clr-row ">
                             <div class="checkbox" id="glb_checkbox">
                                 <input type="checkbox" id="glb_checkbox_input" checked onchange="glb_checkboxChanged()">
@@ -257,19 +257,48 @@
                         </div>
                         <div class="clr-row insights_container">
                             <div class="clr-col">
-                                <h4>Insights</h4>
-                                <ul>
-                                    <li>Efectivamente encontramos que existe un aumento desbordado de la temperatura.
-                                        Dicho aumento
-                                        se nota mucho más en las últimas décadas. Podemos notar que a partir de 1970 la
-                                        temperatura
-                                        ha aumentado incontrolablemente</li>
-                                    <li>Existe una diferencia en los cambios de temperatura entre los hemisferios norte
-                                        y sur.
-                                        Particularmente logra notarse que aproximadamente a partir del año 2000 el
-                                        aumento de
-                                        temperatura en el hemisferio norte es mucho mayor</li>
+                                <ul id="demoTabs" class="nav" role="tablist">
+                                    <li role="presentation" class="nav-item">
+                                        <button id="tab1" class="btn btn-link nav-link active" aria-controls="panel1"
+                                            aria-selected="true" type="button">Insights</button>
+                                    </li>
                                 </ul>
+                                <section id="panel1" role="tabpanel" aria-labelledby="tab1">
+                                    <ul class="list">
+                                        <li><b>Definitivamente el calentamiento global es una realidad.</b> Podemos
+                                            notar que
+                                            las anomalías en la temperatura de la superficie terrestre han aumentado en
+                                            las últimas décadas. Aproximadamente desde el año 1975 se ha visto un
+                                            incremento mayor. De hecho en los últimos años el incremento en la
+                                            temperatura ha sido de más 1ºC, lo que representa un incremento muy grande
+                                            si se compara con años atrás donde los increntos se medían en milésimas de
+                                            ºC</li>
+                                        <li><b>Existe una diferencia en los cambios de temperatura entre los
+                                                hemisferios
+                                                norte y sur.</b> Aunque logra percibirse que el hemisferio norte
+                                            registra
+                                            aumentos mayores de temperatura comparado con el hemisferio sur, es
+                                            importante destacar que este comportamiento se ha visto empeorado
+                                            aproximadamente a partir del año 2000.</li>
+                                        <li>
+                                            <b>El cambio global afecta a todas las estaciones del año:</b> Es común
+                                            escuchar que el calentamiento global no es real basándose en que
+                                            actualmente algunos meses se sienten con temperaturas más bajas que años
+                                            atrás. Sin embargo, los datos confirman que para todas las estaciones del
+                                            año ha existido un cambio sustancial en la temperatura. Esto podemos
+                                            observarlo en la visualización de la parte inferior, donde notamos un
+                                            colorido mayor en las últimas décadas (Aproximadamente a partir de 1975).
+                                        </li>
+
+                                        <li>
+                                            <b>Nuevamente el hemisferio norte produce más calor en todas las épocas del
+                                                año:</b> Si comparamos las tendencias en las anomalías de temperatura
+                                            en tre hemisferios, notamos fácilmente que el hemisferio norte está
+                                            aumentando mucho más su temperatura en todas las épocas del año.
+                                        </li>
+                                    </ul>
+                                </section>
+
                             </div>
                         </div>
                     </div>
